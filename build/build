@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd ${0%/*}
+grunt elm bower_concat uglify typescript less dom_munger

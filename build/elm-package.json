@@ -1,0 +1,13 @@
+{
+    "version": "1.0.0",
+    "summary": "Stamp Together!",
+    "license": "BSD3",
+    "repository": "https://github.com/thSoft/StampTogether.git",
+    "exposed-modules": [],
+    "source-directories": [
+        "../src/main"
+    ],
+    "dependencies": {
+        "elm-lang/core": "1.1.0 <= v < 2.0.0"
+    }
+}
