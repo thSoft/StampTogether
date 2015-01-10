@@ -10,18 +10,13 @@ module.exports = function(grunt) {
 
 	var sourceMainFolder = sourceFolder + mainFolder;
 	var elmSources = [ sourceMainFolder + "**/*.elm" ];
-	var mainScripts = [ sourceMainFolder + "**/*.ts", "typings/**/*.ts" ];
 
 	var sourceSiteFolder = sourceFolder + "site/";
 	var siteScripts = [ sourceSiteFolder + "**/*.ts" ];
-	var stylesheets = [ sourceSiteFolder + "**/*.less" ];
 	var site = sourceSiteFolder + siteBasename;
 
 	var targetFolder = "../target/";
 	var compiledScriptsBasename = "scripts.js";
-
-	var targetMainFolder = targetFolder + mainFolder;
-	var compiledMainScripts = targetMainFolder + compiledScriptsBasename;
 
 	var targetSiteFolder = targetFolder + siteFolder;
 	var compiledDependenciesBasename = "bower_components.js";
@@ -29,8 +24,6 @@ module.exports = function(grunt) {
 	var compiledElmBasename = "elm.js";
 	var compiledElm = targetSiteFolder + compiledElmBasename;
 	var compiledSiteScripts = targetSiteFolder + compiledScriptsBasename;
-	var compiledStylesheetsBasename = "stylesheets.css";
-	var compiledStylesheets = targetSiteFolder + compiledStylesheetsBasename;
 	var compiledSite = targetSiteFolder + siteBasename;
 
 	grunt.initConfig({
@@ -41,19 +34,11 @@ module.exports = function(grunt) {
 			},
 			bower_concat : {
 				files : [ "bower.json" ],
-				tasks : [ "bower_concat", "uglify" ]
-			},
-			typescript_main : {
-				files : mainScripts,
-				tasks : [ "typescript:main" ]
+				tasks : [ "bower_concat" ]
 			},
 			typescript_site : {
 				files : siteScripts,
 				tasks : [ "typescript:site" ]
-			},
-			less : {
-				files : stylesheets,
-				tasks : [ "less" ]
 			},
 			site : {
 				files : site,
@@ -78,26 +63,10 @@ module.exports = function(grunt) {
 				dest : compiledDependencies
 			}
 		},
-		uglify : {
-			build : {
-				src : compiledDependencies,
-				dest : compiledDependencies
-			}
-		},
 		typescript : {
-			main : {
-				src : mainScripts,
-				dest : compiledMainScripts
-			},
 			site : {
-				src : mainScripts.concat(siteScripts),
+				src : siteScripts,
 				dest : compiledSiteScripts
-			}
-		},
-		less : {
-			build : {
-				src : stylesheets,
-				dest : compiledStylesheets
 			}
 		},
 		dom_munger : {
@@ -110,8 +79,7 @@ module.exports = function(grunt) {
 						html :
 							'<script src="' + compiledElmBasename + '" type="text/javascript"></script>' +
 							'<script src="' + compiledDependenciesBasename + '" type="text/javascript"></script>' +
-							'<script src="' + compiledScriptsBasename + '" type="text/javascript"></script>' +
-							'<link rel="stylesheet" href="' + compiledStylesheetsBasename + '" type="text/css" />'
+							'<script src="' + compiledScriptsBasename + '" type="text/javascript"></script>'
 					}
 				}
 			}
