@@ -13,18 +13,20 @@ import Window
 import Mouse
 
 main : Signal Element
-main = state |> Signal.map .value |> Signal.map2 view Window.dimensions
+main = state |> Signal.map2 view Window.dimensions
 
 -- State
 
 port state : Signal Model
 
-type alias Model = {
-  url: String,
-  value: List Stamp
-}
+type alias Model = List Stamp
 
 type alias Stamp = {
+  url: String,
+  value: Position
+}
+
+type alias Position = {
   x: Float,
   y: Float
 }
@@ -44,24 +46,19 @@ view (windowWidth, windowHeight) stamps =
   stamps |> List.map (viewStamp windowWidth windowHeight) |> collage windowWidth windowHeight
 
 viewStamp : Int -> Int -> Stamp -> Form
-viewStamp windowWidth windowHeight {x, y} =
-  let color = hsla (y |> degrees) 1 0.5 0.7
-      screenX = x - (windowWidth |> toFloat) / 2
-      screenY = (windowHeight |> toFloat) / 2 - y
-      angle = x |> degrees
+viewStamp windowWidth windowHeight stamp =
+  let color = hsla (stamp.value.y |> degrees) 1 0.5 0.7
+      screenX = stamp.value.x - (windowWidth |> toFloat) / 2
+      screenY = (windowHeight |> toFloat) / 2 - stamp.value.y
+      angle = stamp.value.x |> degrees
   in ngon 5 20 |> filled color |> move (screenX, screenY) |> rotate angle
 
 -- Commands
 
-port createStamp : Signal CreateStamp
+port createStamp : Signal Stamp
 port createStamp = Mouse.position |> sampleOn Mouse.clicks |> Signal.map makeCreateStamp
 
-type alias CreateStamp = {
-  url: String,
-  value: Stamp
-}
-
-makeCreateStamp : (Int, Int) -> CreateStamp
+makeCreateStamp : (Int, Int) -> Stamp
 makeCreateStamp (x, y) =
   {
     url = url,

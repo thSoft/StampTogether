@@ -1,7 +1,7 @@
 {
   "name": "StampTogether",
   "dependencies": {
-    "firebase": "~2.1.0",
+    "firebase": "v2.0.2",
     "FireElm": "git://github.com/thSoft/FireElm.git"
   }
 }
