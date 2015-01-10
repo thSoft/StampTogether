@@ -7,8 +7,10 @@ import List (..)
 import List
 import Color (..)
 import Graphics.Element (..)
+import Graphics.Input (..)
 import Graphics.Collage (..)
 import Text (..)
+import Text
 import Window
 import Mouse
 
@@ -41,17 +43,21 @@ url = "https://thsoft.firebaseio-demo.com/StampTogether"
 
 -- View
 
-view : (Int, Int) -> List Stamp -> Element
+view : (Int, Int) -> Model -> Element
 view (windowWidth, windowHeight) stamps =
   stamps |> List.map (viewStamp windowWidth windowHeight) |> collage windowWidth windowHeight
 
 viewStamp : Int -> Int -> Stamp -> Form
 viewStamp windowWidth windowHeight stamp =
-  let color = hsla (stamp.value.y |> degrees) 1 0.5 0.7
-      screenX = stamp.value.x - (windowWidth |> toFloat) / 2
-      screenY = (windowHeight |> toFloat) / 2 - stamp.value.y
-      angle = stamp.value.x |> degrees
-  in ngon 5 20 |> filled color |> move (screenX, screenY) |> rotate angle
+  let angle = (stamp.value.x * stamp.value.y) |> degrees
+      color = hsla angle 1 0.5 0.7
+      stampSize = radius * 2
+      delete = stamp.url |> send deleteStampChannel
+      screenX = stamp.value.x - radius - (windowWidth |> toFloat) / 2
+      screenY = (windowHeight |> toFloat) / 2 - (stamp.value.y - radius)
+  in [ngon 5 radius |> filled color] |> collage stampSize stampSize |> clickable delete |> toForm |> rotate angle |> move (screenX, screenY)
+
+radius = 8
 
 -- Commands
 
@@ -67,3 +73,9 @@ makeCreateStamp (x, y) =
       y = y |> toFloat
     }
   }
+
+port deleteStamp : Signal String
+port deleteStamp = deleteStampChannel |> subscribe
+
+deleteStampChannel : Channel String
+deleteStampChannel = channel ""
