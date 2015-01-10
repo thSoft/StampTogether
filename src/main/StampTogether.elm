@@ -34,30 +34,28 @@ type alias Position = {
 }
 
 port observedUrls : Signal (List String)
-port observedUrls = every (0.1 * second) |> foldp (\_ count -> count + 1) 0 |> Signal.map getUrl |> dropRepeats
+port observedUrls =
+  let count _ index = index + 1
+      compute index = if index == 0 then [] else [modelUrl]
+  in every (0.1 * second) |> foldp count 0 |> Signal.map compute |> dropRepeats
 
-getUrl : Int -> List String
-getUrl count = if count == 0 then [] else [url]
-
-url = "https://thsoft.firebaseio-demo.com/StampTogether"
+modelUrl = "https://thsoft.firebaseio-demo.com/StampTogether"
 
 -- View
 
 view : (Int, Int) -> Model -> Element
-view (windowWidth, windowHeight) stamps =
-  stamps |> List.map (viewStamp windowWidth windowHeight) |> collage windowWidth windowHeight
+view (windowWidth, windowHeight) stamps = stamps |> List.map (viewStamp windowWidth windowHeight) |> collage windowWidth windowHeight
 
 viewStamp : Int -> Int -> Stamp -> Form
 viewStamp windowWidth windowHeight stamp =
   let angle = (stamp.value.x * stamp.value.y) |> degrees
       color = hsla angle 1 0.5 0.7
+      radius = 8
       stampSize = radius * 2
       delete = stamp.url |> send deleteStampChannel
       screenX = stamp.value.x - (windowWidth |> toFloat) / 2
       screenY = (windowHeight |> toFloat) / 2 - stamp.value.y
   in [ngon 5 radius |> filled color] |> collage stampSize stampSize |> clickable delete |> toForm |> rotate angle |> move (screenX, screenY)
-
-radius = 8
 
 -- Commands
 
@@ -67,7 +65,7 @@ port createStamp = Mouse.position |> sampleOn Mouse.clicks |> Signal.map makeCre
 makeCreateStamp : (Int, Int) -> Stamp
 makeCreateStamp (x, y) =
   {
-    url = url,
+    url = modelUrl,
     value = {
       x = x |> toFloat,
       y = y |> toFloat
