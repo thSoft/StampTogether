@@ -53,8 +53,8 @@ viewStamp windowWidth windowHeight stamp =
       color = hsla angle 1 0.5 0.7
       stampSize = radius * 2
       delete = stamp.url |> send deleteStampChannel
-      screenX = stamp.value.x - radius - (windowWidth |> toFloat) / 2
-      screenY = (windowHeight |> toFloat) / 2 - (stamp.value.y - radius)
+      screenX = stamp.value.x - (windowWidth |> toFloat) / 2
+      screenY = (windowHeight |> toFloat) / 2 - stamp.value.y
   in [ngon 5 radius |> filled color] |> collage stampSize stampSize |> clickable delete |> toForm |> rotate angle |> move (screenX, screenY)
 
 radius = 8
