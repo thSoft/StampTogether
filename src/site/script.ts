@@ -14,18 +14,20 @@ interface Stamp {
 
 interface StampTogetherPorts {
   observedUrls: PortFromElm<Array<string>>;
-  state: PortToElm<Array<Stamp>>;
+  stamps: PortToElm<Array<Stamp>>;
   createStamp: PortFromElm<FireElm.Data>;
   deleteStamp: PortFromElm<string>;
+  moveStamp: PortFromElm<FireElm.Data>;
 }
 
 window.onload = () => {
   var component = Elm.fullscreen(Elm.StampTogether, {
-    state: []
+    stamps: []
   });
-  FireElm.read(component.ports.observedUrls, component.ports.state, makeStamps);
+  FireElm.read(component.ports.observedUrls, component.ports.stamps, makeStamps);
   FireElm.push(component.ports.createStamp);
   FireElm.remove(component.ports.deleteStamp);
+  FireElm.write(component.ports.moveStamp);
 }
 
 function makeStamps(snapshot: FirebaseDataSnapshot): Array<Stamp> {

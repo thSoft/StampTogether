@@ -1,13 +1,14 @@
 {
     "version": "1.0.0",
     "summary": "Stamp Together!",
-    "license": "BSD3",
     "repository": "https://github.com/thSoft/StampTogether.git",
-    "exposed-modules": [],
+    "license": "BSD3",
     "source-directories": [
         "../src/main"
     ],
+    "exposed-modules": [],
     "dependencies": {
-        "elm-lang/core": "1.1.0 <= v < 2.0.0"
+        "elm-lang/core": "1.1.0 <= v < 2.0.0",
+        "jvoigtlaender/elm-drag-and-drop": "1.0.0 <= v < 2.0.0"
     }
 }
