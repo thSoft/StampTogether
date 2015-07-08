@@ -1,6 +1,20 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-set -e
-cd ${0%/*}
-./build
-grunt watch
+require('shelljs/global');
+var path = require('path');
+var watch = require('node-watch');
+var paths = require('./paths.js');
+
+build();
+watch([paths.sourceElm, paths.elmPackage], function (event, filename) {
+  build();
+});
+
+function build() {
+  clearScreen();
+  exec(path.join(paths.build, 'build'));
+}
+
+function clearScreen() {
+  console.log('\033[2J');
+}

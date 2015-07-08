@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-cd ${0%/*}
-grunt open
+require('shelljs/global');
+var paths = require('./paths.js');
+
+exec('open ' + paths.targetMainRoot);

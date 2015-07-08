@@ -1,4 +1,12 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-cd ${0%/*}
-grunt elm bower_concat typescript less dom_munger
+require('shelljs/global');
+var paths = require('./paths.js');
+
+rm('-rf', paths.target);
+make(paths.sourceMainRoot, paths.targetMainRoot);
+
+function make(source, target) {
+  cd(paths.build);
+  exec('elm-make --yes ' + source + ' --output ' + target);
+}
